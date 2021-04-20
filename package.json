@@ -3,11 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@aws-amplify/core": "^3.8.22",
+    "@aws-amplify/ui-react": "^1.0.7",
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
+    "aws-amplify": "^3.3.27",
+    "aws-sdk": "^2.888.0",
+    "bootstrap": "^4.6.0",
+    "mapbox-gl": "^1.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-map-gl": "^5.2.11",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.1"
   },
@@ -21,7 +28,11 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-console": 0,
+      "no-debugger": 0
+    }
   },
   "browserslist": {
     "production": [
@@ -34,5 +45,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss7-compat": "^2.1.0",
+    "autoprefixer": "^9.8.6",
+    "postcss": "^7.0.35",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.1.0"
   }
 }
