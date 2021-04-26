@@ -1,18 +1,11 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import React, { useState, useEffect } from 'react';
-
 import Amplify, { Auth } from 'aws-amplify';
-import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-
 import { Signer } from "@aws-amplify/core";
 import Location from "aws-sdk/clients/location";
-
 import Pin from './Pin'
 import useInterval from './useInterval'
-
-
 import ReactMapGL, {Marker,
   NavigationControl
 } from "react-map-gl";
@@ -22,7 +15,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import awsconfig from './aws-exports';
 
 const mapName = "donde-esta-miguel-map";
-const indexName = "DondeEstaMiguelIndex";
 const trackerName = "MiguelsTracker";
 const deviceID = "myphone1";
 
@@ -52,61 +44,28 @@ Amplify.configure(awsconfig);
   return { url: url || "" };
 };
 
-function Header(props) {
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-10">
-          <h1>Donde Esta Miguel</h1>
-        </div>
-        <div className="col-2">
-          <AmplifySignOut />
-        </div>
-      </div>
-    </div>
-  )
-};
-
-function Search(props){
-
-  const [place, setPlace] = useState('Cagliari');
- 
-  const handleChange = (event) => {
-    setPlace(event.target.value);
-  }
-
-  const handleClick = (event) => {
-    event.preventDefault();
-    props.searchPlace(place)
-  }
-  
-  return (
-    <div className="container">
-      <div className="input-group">
-        <input type="text" className="form-control form-control-lg" placeholder="Search for Places" aria-label="Place" aria-describedby="basic-addon2" value={ place } onChange={handleChange}/>
-        <div className="input-group-append">
-          <button onClick={ handleClick } className="btn btn-primary" type="submit">Go Ahead</button>
-        </div>
-      </div>
-    </div>
-  )
-};
-
 function Track(props){
   
   const handleClick = (event) => {
+    let mapDiv = document.getElementById('map-box-container');
     event.preventDefault();
+    mapDiv.scrollIntoView({ 
+      behavior: "auto", block: "end", inline: "nearest"
+    });
     props.trackDevice()
   }
 
   return (
-    <div className="container">
-      <div className="input-group">
-        <div className="input-group-append">
-          <button onClick={ handleClick } className="btn btn-primary" type="submit">Track</button>
-        </div>
-      </div>
-    </div>
+    <div className="position-relative vertical-center" style={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      }}>
+        <button type="button" onClick={ handleClick} class="btn btn-dark position-relative">
+  Donde Esta Miguel? <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill" fill="#212529" xmlns="http://www.w3.org/2000/svg"><path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
+</button>
+  </div>
   )
 }
 
@@ -151,32 +110,6 @@ const App = () => {
   useInterval(() => {
     getDevicePosition();
   }, 30000);
-
-  const searchPlace = (place) => {
-
-    const params = {
-      IndexName: indexName,
-      Text: place,
-    };
-
-    client.searchPlaceIndexForText(params, (err, data) => {
-      if (err) console.error(err);
-      if (data) {
- 
-        const coordinates = data.Results[0].Place.Geometry.Point;
-        setViewport({
-          longitude: coordinates[0],
-          latitude: coordinates[1], 
-          zoom: 10});
-
-        setMarker({
-          longitude: coordinates[0],
-          latitude: coordinates[1],                 
-        })
-        return coordinates;
-      }
-    });
-  }
 
   const getDevicePosition = () => {
     setDevPosMarkers([]);
@@ -227,18 +160,12 @@ const App = () => {
     )), [devPosMarkers]);
 
   return (
-    <AmplifyAuthenticator>
     <div className="App">
-      <Header/>
-      <div>
-        <Search searchPlace = {searchPlace} /> 
-      </div>
-      <br/>
       <div>
         <Track trackDevice = {getDevicePosition}/>
       </div>
       <br/>
-      <div>
+      <div id="map-box-container">
       {credentials ? (
           <ReactMapGL
             {...viewport}
@@ -246,9 +173,10 @@ const App = () => {
             height="100vh"
             transformRequest={transformRequest(credentials)}
             mapStyle={mapName}
-            onViewportChange={setViewport}w
+            onViewportChange={setViewport}
           >
             <Marker
+              key={Date.now()}
               longitude={marker.longitude}
               latitude={marker.latitude}
               offsetTop={-20}
@@ -269,7 +197,6 @@ const App = () => {
       )}
       </div>
     </div>
-    </AmplifyAuthenticator>
   );
 }
 
