@@ -15,6 +15,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import awsconfig from './aws-exports';
 
 const mapName = "donde-esta-miguel-map";
+const indexName = "DondeEstaMiguelIndex";
 const trackerName = "MiguelsTracker";
 const deviceID = "myphone1";
 
@@ -62,10 +63,20 @@ function Track(props){
         justifyContent: "center",
         alignItems: "center"
       }}>
-        <button type="button" onClick={ handleClick} class="btn btn-dark position-relative">
-  Donde Esta Miguel? <svg width="1em" height="1em" viewBox="0 0 16 16" class="position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill" fill="#212529" xmlns="http://www.w3.org/2000/svg"><path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
+        <button type="button" onClick={ handleClick } className="btn btn-dark position-relative">
+  Donde Esta Miguel? <svg width="1em" height="1em" viewBox="0 0 16 16" className="position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill" fill="#212529" xmlns="http://www.w3.org/2000/svg"><path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
 </button>
   </div>
+  )
+}
+
+function MiguelIs(props){
+  return (
+    <h1 style={{
+      top: 200,
+      color: 'white',
+      backgroundColor: 'black',
+    }}>Miguel Is in {props.place}</h1>
   )
 }
 
@@ -80,6 +91,7 @@ const App = () => {
   });
 
   const [client, setClient] = useState(null);
+  const [currentPlace, setCurrentPlace] = useState(null);
  
   const [marker, setMarker] = useState({
     longitude: -123.1187,
@@ -122,10 +134,11 @@ const App = () => {
     };
 
     client.getDevicePositionHistory(params, (err, data) => {
-      if (err) console.log(err, err.stack); 
+      if (err) console.error(err, err.stack); 
       if (data) { 
-        console.log(data)
+        //console.log(data)
         const tempPosMarkers = data.DevicePositions.map( function (devPos, index) {
+        searchPlaceByPos(devPos.Position);
 
           return {
             index: index,
@@ -149,6 +162,22 @@ const App = () => {
           }
         }
 
+    });
+  }
+
+  const searchPlaceByPos = (pos) => {
+    const params = {
+      MaxResults: 1,
+      IndexName: indexName,
+      Position: pos,
+    };
+  
+    client.searchPlaceIndexForPosition(params, (err,data) => {
+      if (err) console.error(err, err.stack);
+      if (data) {
+        const place = data.Results[0]?.Place?.Municipality;
+        setCurrentPlace(place);
+      } 
     });
   }
 
@@ -184,7 +213,9 @@ const App = () => {
             > 
             <Pin size={20}/>
             </Marker>
-
+            <MiguelIs 
+              place={ currentPlace }
+            />
             {trackerMarkers}
 
             <div style={{ position: "absolute", left: 20, top: 20 }}>
