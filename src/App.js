@@ -1,6 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
+import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import Amplify, { Auth } from 'aws-amplify';
 import { Signer } from "@aws-amplify/core";
 import Location from "aws-sdk/clients/location";
@@ -10,7 +11,6 @@ import ReactMapGL, {Marker,
   NavigationControl
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-
 
 import awsconfig from './aws-exports';
 
@@ -164,6 +164,7 @@ const App = () => {
 
     });
   }
+  
 
   const searchPlaceByPos = (pos) => {
     const params = {
@@ -189,13 +190,15 @@ const App = () => {
     )), [devPosMarkers]);
 
   return (
-    <div className="App">
-      <div>
-        <Track trackDevice = {getDevicePosition}/>
-      </div>
-      <br/>
-      <div id="map-box-container">
-      {credentials ? (
+    <AmplifyAuthenticator>
+      <div className="App">
+        <div>
+          <Track trackDevice = {getDevicePosition}/>
+        </div>
+        <br/>
+        <div id="map-box-container">
+        {credentials ? (
+
           <ReactMapGL
             {...viewport}
             width="100%"
@@ -204,30 +207,33 @@ const App = () => {
             mapStyle={mapName}
             onViewportChange={setViewport}
           >
-            <Marker
-              key={Date.now()}
-              longitude={marker.longitude}
-              latitude={marker.latitude}
-              offsetTop={-20}
-              offsetLeft={-10}
-            > 
-            <Pin size={20}/>
-            </Marker>
-            <MiguelIs 
-              place={ currentPlace }
-            />
-            {trackerMarkers}
-
-            <div style={{ position: "absolute", left: 20, top: 20 }}>
-              <NavigationControl showCompass={false} />
-            </div>
+              <Marker
+                key={Date.now()}
+                longitude={marker.longitude}
+                latitude={marker.latitude}
+                offsetTop={-20}
+                offsetLeft={-10}
+              > 
+              <Pin size={20}/>
+              </Marker>
+              <div>
+                <MiguelIs place={ currentPlace || "nowhere" }/>
+                <AmplifySignOut/>
+              </div>
             
-          </ReactMapGL>
-      ) : (
-        <h1>Loading...</h1>
-      )}
+              {trackerMarkers}
+
+              <div style={{ position: "absolute", left: 20, top: 20 }}>
+                <NavigationControl showCompass={false} />
+              </div>
+            </ReactMapGL>     
+    
+        ) : (
+          <h1>Loading...</h1>
+        )}
+        </div>
       </div>
-    </div>
+    </AmplifyAuthenticator>  
   );
 }
 
