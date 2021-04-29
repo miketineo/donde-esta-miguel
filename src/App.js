@@ -1,7 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import Amplify, { Auth } from 'aws-amplify';
 import { Signer } from "@aws-amplify/core";
 import Location from "aws-sdk/clients/location";
@@ -190,7 +190,6 @@ const App = () => {
     )), [devPosMarkers]);
 
   return (
-    <AmplifyAuthenticator>
       <div className="App">
         <div>
           <Track trackDevice = {getDevicePosition}/>
@@ -233,7 +232,6 @@ const App = () => {
         )}
         </div>
       </div>
-    </AmplifyAuthenticator>  
   );
 }
 

@@ -1,0 +1,20 @@
+{
+  "master": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-dondeestamiguel-master-203022-authRole",
+      "UnauthRoleArn": "arn:aws:iam::840141215044:role/amplify-dondeestamiguel-master-203022-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::840141215044:role/amplify-dondeestamiguel-master-203022-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-dondeestamiguel-master-203022-deployment",
+      "UnauthRoleName": "amplify-dondeestamiguel-master-203022-unauthRole",
+      "StackName": "amplify-dondeestamiguel-master-203022",
+      "StackId": "arn:aws:cloudformation:us-east-1:840141215044:stack/amplify-dondeestamiguel-master-203022/3b337e30-a217-11eb-8d1b-0ada7ccc8ac7",
+      "AmplifyAppId": "d3ab0phyrw3mn1"
+    },
+    "categories": {
+      "auth": {
+        "dondeestamiguelbbda10ea": {}
+      }
+    }
+  }
+}
