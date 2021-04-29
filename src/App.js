@@ -72,11 +72,18 @@ function Track(props){
 
 function MiguelIs(props){
   return (
-    <h1 style={{
-      top: 200,
-      color: 'white',
-      backgroundColor: 'black',
-    }}>Miguel Is in {props.place}</h1>
+    <div style={{
+      width:"100vh",
+      height:"100vh",
+      backgroundColor: '#38b6ff',
+      background: `#38b6ff url("/Donde.png") no-repeat fixed center`
+    }}>
+      <h1 style={{
+        top: 200,
+        color: 'white',
+        backgroundColor: 'black',
+      }}>Miguel Is in {props.place}</h1>
+    </div>
   )
 }
 
