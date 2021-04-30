@@ -1,8 +1,8 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import Amplify, { Auth } from 'aws-amplify';
+import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import Amplify, { Auth, Hub } from 'aws-amplify';
 import { Signer } from "@aws-amplify/core";
 import Location from "aws-sdk/clients/location";
 import Pin from './Pin'
@@ -72,18 +72,18 @@ function Track(props){
 
 function MiguelIs(props){
   return (
-    <div style={{
-      width:"100vh",
-      height:"100vh",
-      backgroundColor: '#38b6ff',
-      background: `#38b6ff url("/Donde.png") no-repeat fixed center`
-    }}>
+    // <div style={{
+    //   width:"100vh",
+    //   height:"100vh",
+    //   backgroundColor: '#38b6ff',
+    //   background: `#38b6ff url("/Donde.png") no-repeat fixed center`
+    // }}>
       <h1 style={{
         top: 200,
         color: 'white',
         backgroundColor: 'black',
       }}>Miguel Is in {props.place}</h1>
-    </div>
+    //</div>
   )
 }
 
@@ -197,6 +197,8 @@ const App = () => {
     )), [devPosMarkers]);
 
   return (
+    <AmplifyAuthenticator>
+
       <div className="App">
         <div>
           <Track trackDevice = {getDevicePosition}/>
@@ -204,15 +206,14 @@ const App = () => {
         <br/>
         <div id="map-box-container">
         {credentials ? (
-
-          <ReactMapGL
-            {...viewport}
-            width="100%"
-            height="100vh"
-            transformRequest={transformRequest(credentials)}
-            mapStyle={mapName}
-            onViewportChange={setViewport}
-          >
+            <ReactMapGL
+              {...viewport}
+              width="100%"
+              height="100vh"
+              transformRequest={transformRequest(credentials)}
+              mapStyle={mapName}
+              onViewportChange={setViewport}
+            >
               <Marker
                 key={Date.now()}
                 longitude={marker.longitude}
@@ -233,12 +234,15 @@ const App = () => {
                 <NavigationControl showCompass={false} />
               </div>
             </ReactMapGL>     
+        
     
         ) : (
           <h1>Loading...</h1>
         )}
         </div>
       </div>
+      </AmplifyAuthenticator>
+
   );
 }
 
