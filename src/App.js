@@ -1,7 +1,7 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+// import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import Amplify, { Auth, Hub } from 'aws-amplify';
 import { Signer } from "@aws-amplify/core";
 import Location from "aws-sdk/clients/location";
@@ -11,6 +11,8 @@ import ReactMapGL, {Marker,
   NavigationControl
 } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import DondeImg from './donde.png';
+import MarkerSVG from './marker2.svg';
 
 import awsconfig from './aws-exports';
 
@@ -46,9 +48,12 @@ Amplify.configure(awsconfig);
 };
 
 function Track(props){
-  
+  const [visibility, setVisibility] = useState(true);
+
   const handleClick = (event) => {
     let mapDiv = document.getElementById('map-box-container');
+    let introDiv = document.getElementById('intro');
+    setVisibility(false);
     event.preventDefault();
     mapDiv.scrollIntoView({ 
       behavior: "auto", block: "end", inline: "nearest"
@@ -56,16 +61,15 @@ function Track(props){
     props.trackDevice()
   }
 
-  return (
-    <div className="position-relative vertical-center" style={{
+  return visibility && (
+    <div id="intro" display={props.visibility} className="position-relative vertical-center" onClick={handleClick} style={{
         height: "100vh",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center"
-      }}>
-        <button type="button" onClick={ handleClick } className="btn btn-dark position-relative">
-  Donde Esta Miguel? <svg width="1em" height="1em" viewBox="0 0 16 16" className="position-absolute top-100 start-50 translate-middle mt-1 bi bi-caret-down-fill" fill="#212529" xmlns="http://www.w3.org/2000/svg"><path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>
-</button>
+        alignItems: "center",
+        cursor: `url(${MarkerSVG}), auto`,
+        background: `#38b6ff url(${DondeImg}) no-repeat fixed center`
+    }}>
   </div>
   )
 }
@@ -197,11 +201,9 @@ const App = () => {
     )), [devPosMarkers]);
 
   return (
-    <AmplifyAuthenticator>
-
       <div className="App">
         <div>
-          <Track trackDevice = {getDevicePosition}/>
+          <Track trackDevice = {getDevicePosition} visibility="normal"/>
         </div>
         <br/>
         <div id="map-box-container">
@@ -225,7 +227,6 @@ const App = () => {
               </Marker>
               <div>
                 <MiguelIs place={ currentPlace || "nowhere" }/>
-                <AmplifySignOut/>
               </div>
             
               {trackerMarkers}
@@ -241,7 +242,6 @@ const App = () => {
         )}
         </div>
       </div>
-      </AmplifyAuthenticator>
 
   );
 }
