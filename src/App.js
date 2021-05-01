@@ -82,12 +82,14 @@ function MiguelIs(props){
     //   backgroundColor: '#38b6ff',
     //   background: `#38b6ff url("/Donde.png") no-repeat fixed center`
     // }}>
+    <div>
       <h1 style={{
         top: 200,
         color: 'white',
         backgroundColor: 'black',
       }}>Miguel Is in {props.place}</h1>
-    //</div>
+      <h1 className="errorflash">{props.flash}</h1>
+    </div>
   )
 }
 
@@ -103,7 +105,7 @@ const App = () => {
 
   const [client, setClient] = useState(null);
   const [currentPlace, setCurrentPlace] = useState(null);
- 
+  const [errorFlash, setErrorFlash] = useState(null);
   const [marker, setMarker] = useState({
     longitude: -123.1187,
     latitude: 49.2819,
@@ -145,12 +147,16 @@ const App = () => {
     };
 
     client.getDevicePositionHistory(params, (err, data) => {
-      if (err) console.error(err, err.stack); 
+      if (err) {
+        console.error(err, err.stack); 
+        setErrorFlash("Something went wrong");
+      } 
       if (data) { 
         //console.log(data)
         const tempPosMarkers = data.DevicePositions.map( function (devPos, index) {
+        setErrorFlash("Should be fine?");
         searchPlaceByPos(devPos.Position);
-
+        
           return {
             index: index,
             long: devPos.Position[0],
@@ -189,7 +195,7 @@ const App = () => {
       if (data) {
         const place = data.Results[0]?.Place?.Municipality;
         setCurrentPlace(place);
-      } 
+      }
     });
   }
 
@@ -226,7 +232,7 @@ const App = () => {
               <Pin size={20}/>
               </Marker>
               <div>
-                <MiguelIs place={ currentPlace || "nowhere" }/>
+                <MiguelIs place={ currentPlace || "(wait for it...)"} flash={errorFlash} />
               </div>
             
               {trackerMarkers}

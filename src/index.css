@@ -12,3 +12,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.errorflash {
+  color: red;
+  animation: pulsate 5s ease-out;
+  animation-iteration-count: infinite; 
+  opacity: 0.5;
+}
+
+@keyframes fuck {
+  0% { 
+      opacity: 0.5;
+  }
+  50% { 
+      opacity: 1.0;
+  }
+  100% { 
+      opacity: 0.5;
+  }
+}
