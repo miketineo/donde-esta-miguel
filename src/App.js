@@ -1,8 +1,8 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState, useEffect } from 'react';
-// import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
-import Amplify, { Auth, Hub } from 'aws-amplify';
+import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
+import Amplify, { Auth } from 'aws-amplify';
 import { Signer } from "@aws-amplify/core";
 import Location from "aws-sdk/clients/location";
 import Pin from './Pin'
@@ -52,7 +52,6 @@ function Track(props){
 
   const handleClick = (event) => {
     let mapDiv = document.getElementById('map-box-container');
-    let introDiv = document.getElementById('intro');
     setVisibility(false);
     event.preventDefault();
     mapDiv.scrollIntoView({ 
@@ -76,12 +75,6 @@ function Track(props){
 
 function MiguelIs(props){
   return (
-    // <div style={{
-    //   width:"100vh",
-    //   height:"100vh",
-    //   backgroundColor: '#38b6ff',
-    //   background: `#38b6ff url("/Donde.png") no-repeat fixed center`
-    // }}>
     <div>
       <h1 style={{
         top: 200,
@@ -152,9 +145,7 @@ const App = () => {
         setErrorFlash("Something went wrong");
       } 
       if (data) { 
-        //console.log(data)
         const tempPosMarkers = data.DevicePositions.map( function (devPos, index) {
-        setErrorFlash("Should be fine?");
         searchPlaceByPos(devPos.Position);
         
           return {
@@ -175,7 +166,7 @@ const App = () => {
           setViewport({
             longitude: tempPosMarkers[pos].long,
             latitude: tempPosMarkers[pos].lat, 
-            zoom: 5});
+            zoom: 8});
           }
         }
 
@@ -207,8 +198,9 @@ const App = () => {
     )), [devPosMarkers]);
 
   return (
+    <AmplifyAuthenticator>
       <div className="App">
-        <div>
+u       <div>
           <Track trackDevice = {getDevicePosition} visibility="normal"/>
         </div>
         <br/>
@@ -248,6 +240,8 @@ const App = () => {
         )}
         </div>
       </div>
+    </AmplifyAuthenticator>
+
 
   );
 }
